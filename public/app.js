@@ -29,7 +29,7 @@ $(document).on("click", "p", function() {
   })
     // With that done, add the note information to the page
     .then(function(data) {
-      console.log(data);
+      console.log("getnotedata", data);
       // The title of the article
       $("#notes").append("<h2>" + data.title + "</h2>");
       // An input to enter a new title
@@ -40,15 +40,20 @@ $(document).on("click", "p", function() {
       $("#notes").append(
         "<button data-id='" + data._id + "' id='savenote'>Save Note</button>"
       );
-      $("#notes").append(
-        "<button data-id='" + data._id + "' id='delnote'>Delete Note</button>"
-      );
+
       // If there's a note in the article
       if (data.note) {
         // Place the title of the note in the title input
         $("#titleinput").val(data.note.title);
         // Place the body of the note in the body textarea
         $("#bodyinput").val(data.note.body);
+        $("#notes").append(
+          "<button data-id='" +
+            data.note._id +
+            "' note-id='" +
+            data._id +
+            "' id='delnote'>Delete Note</button>"
+        );
       }
     });
 });
@@ -66,8 +71,32 @@ $(document).on("click", "#savenote", function() {
       // Value taken from title input
       title: $("#titleinput").val(),
       // Value taken from note textarea
-      body: $("#bodyinput").val()
+      body: $("#bodyinput").val(),
+      artid: thisId
     }
+  })
+    // With that done
+    .then(function(data) {
+      // Log the response
+      console.log(data);
+      // Empty the notes section
+      $("#notes").empty();
+    });
+
+  // Also, remove the values entered in the input and textarea for note entry
+  $("#titleinput").val("");
+  $("#bodyinput").val("");
+});
+
+// When you click the deletenote button
+$(document).on("click", "#delnote", function() {
+  // Grab the id associated with the article from the submit button
+  var thisId = $(this).attr("data-id");
+  var artId = $(this).attr("note-id");
+  // Run a POST request to change the note, using what's entered in the inputs
+  $.ajax({
+    method: "POST",
+    url: "/delnote/" + thisId
   })
     // With that done
     .then(function(data) {
