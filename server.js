@@ -107,9 +107,7 @@ app.post("/articles/:id", function(req, res) {
 
   db.Note.create(req.body)
     .then(function(dbNote) {
-      // If a Note was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Note
-      // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
-      // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
+      console.log("updatenote", dbNote);
       return db.Article.findOneAndUpdate(
         { _id: req.params.id },
         { note: dbNote._id },
@@ -126,15 +124,17 @@ app.post("/articles/:id", function(req, res) {
     });
 });
 // Route for deleting an articles associated Note
-app.post("/delnote/:id", function(req, res) {
-  var noteId = req.params.id;
-
-  db.Note.deleteOne({ noteId })
+app.post("/delnote", function(req, res) {
+  db.Note.deleteOne({ _id: req.body.id })
     .then(function() {
-      // If a Note was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Note
-      // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
-      // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
-      return console.log("update completed");
+      db.Note.findOne({ artid: req.body.artid }).then(function(dbNote) {
+        console.log("updatenote", dbNote);
+        return db.Article.findOneAndUpdate(
+          { _id: req.body.artid },
+          { note: dbNote._id },
+          { new: true }
+        );
+      });
     })
     .then(function(dbArticle) {
       // If we were able to successfully update an Article, send it back to the client

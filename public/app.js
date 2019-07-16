@@ -91,12 +91,16 @@ $(document).on("click", "#savenote", function() {
 // When you click the deletenote button
 $(document).on("click", "#delnote", function() {
   // Grab the id associated with the article from the submit button
-  var thisId = $(this).attr("data-id");
-  var artId = $(this).attr("note-id");
+  //var thisId = $(this).attr("data-id");
+  //var artId = $(this).attr("note-id");
   // Run a POST request to change the note, using what's entered in the inputs
   $.ajax({
     method: "POST",
-    url: "/delnote/" + thisId
+    url: "/delnote",
+    data: {
+      id: $(this).attr("data-id"),
+      artid: $(this).attr("note-id")
+    }
   })
     // With that done
     .then(function(data) {
