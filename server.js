@@ -20,7 +20,7 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-mongoose.connect(MONGODB_URI);
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 app.get("/scrape", function(req, res) {
   axios.get("https://www.statesman.com/").then(function(response) {
@@ -38,7 +38,7 @@ app.get("/scrape", function(req, res) {
 
       db.Article.create(result)
         .then(function(dbArticle) {
-          console.log(dbArticle);
+          console.log("thisis the scrape");
         })
         .catch(function(err) {
           console.log(err);
