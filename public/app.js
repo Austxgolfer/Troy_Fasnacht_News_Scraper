@@ -1,22 +1,44 @@
+$.getJSON("/articles", function(data) {
+  for (var i = 0; i < data.length; i++) {
+    $("#articles").append(
+      "<p data-id='" +
+        data[i]._id +
+        "'>" +
+        data[i].title +
+        "<br />" +
+        data[i].link +
+        "</p>"
+    );
+  }
+});
+
+$(document).on("click", "#display", function() {
+  $.ajax({
+    method: "GET",
+    url: "/articles"
+  }).then(function(data) {
+    for (var i = 0; i < data.length; i++) {
+      $("#articles").append(
+        "<p data-id='" +
+          data[i]._id +
+          "'>" +
+          data[i].title +
+          "<br />" +
+          data[i].link +
+          "</p>"
+      );
+    }
+    console.log("posting articles");
+  });
+});
+
 $(document).on("click", "#scrape", function() {
   $("#scrape").hide();
   $.ajax({
     method: "GET",
     url: "/scrape"
-  }).then(function() {
-    $.getJSON("/articles", function(data) {
-      for (var i = 0; i < data.length; i++) {
-        $("#articles").append(
-          "<p data-id='" +
-            data[i]._id +
-            "'>" +
-            data[i].title +
-            "<br />" +
-            data[i].link +
-            "</p>"
-        );
-      }
-    });
+  }).then(function(data) {
+    console.log("posting articles");
   });
 });
 
